@@ -1,6 +1,6 @@
 {
   "name": "ntfy-bridge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local bridge from ntfy.sh to localhost",
   "type": "module",
   "main": "dist/index.js",
