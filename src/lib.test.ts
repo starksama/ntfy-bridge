@@ -79,6 +79,8 @@ describe("parseArgs", () => {
     expect(result).toEqual({
       topics: ["alerts"],
       forward: "http://localhost:8080",
+      headers: {},
+      openclawMode: false,
     });
   });
 
@@ -92,6 +94,42 @@ describe("parseArgs", () => {
     expect(result).toEqual({
       topics: ["alerts", "news"],
       forward: "http://localhost:8080",
+      headers: {},
+      openclawMode: false,
+    });
+  });
+
+  it("parses custom headers", () => {
+    const result = parseArgs([
+      "node", "script",
+      "-t", "alerts",
+      "-f", "http://localhost:8080",
+      "-H", "Authorization: Bearer token123",
+      "-H", "X-Custom: value"
+    ]);
+    expect(result).toEqual({
+      topics: ["alerts"],
+      forward: "http://localhost:8080",
+      headers: {
+        "Authorization": "Bearer token123",
+        "X-Custom": "value",
+      },
+      openclawMode: false,
+    });
+  });
+
+  it("parses openclaw mode", () => {
+    const result = parseArgs([
+      "node", "script",
+      "-t", "alerts",
+      "-f", "http://localhost:8080",
+      "--openclaw"
+    ]);
+    expect(result).toEqual({
+      topics: ["alerts"],
+      forward: "http://localhost:8080",
+      headers: {},
+      openclawMode: true,
     });
   });
 

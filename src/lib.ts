@@ -45,10 +45,19 @@ export function createPayload(msg: NtfyMessage): BridgePayload {
   };
 }
 
-export function parseArgs(argv: string[]): { topics: string[]; forward: string } | null {
+export interface ParsedArgs {
+  topics: string[];
+  forward: string;
+  headers: Record<string, string>;
+  openclawMode: boolean;
+}
+
+export function parseArgs(argv: string[]): ParsedArgs | null {
   const args = argv.slice(2);
   const topics: string[] = [];
   let forward = "";
+  const headers: Record<string, string> = {};
+  let openclawMode = false;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -56,6 +65,16 @@ export function parseArgs(argv: string[]): { topics: string[]; forward: string }
       topics.push(args[++i]);
     } else if (arg === "--forward" || arg === "-f") {
       forward = args[++i];
+    } else if (arg === "--header" || arg === "-H") {
+      const header = args[++i];
+      const colonIdx = header.indexOf(":");
+      if (colonIdx > 0) {
+        const key = header.slice(0, colonIdx).trim();
+        const value = header.slice(colonIdx + 1).trim();
+        headers[key] = value;
+      }
+    } else if (arg === "--openclaw") {
+      openclawMode = true;
     } else if (arg === "--help" || arg === "-h") {
       return null; // Signal help requested
     }
@@ -65,5 +84,5 @@ export function parseArgs(argv: string[]): { topics: string[]; forward: string }
     return null;
   }
 
-  return { topics, forward };
+  return { topics, forward, headers, openclawMode };
 }
