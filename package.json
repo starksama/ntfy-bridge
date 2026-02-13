@@ -1,0 +1,39 @@
+{
+  "name": "ntfy-bridge",
+  "version": "0.1.0",
+  "description": "Local bridge from ntfy.sh to localhost",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "ntfy-bridge": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ntfy",
+    "notifications",
+    "webhook",
+    "bridge",
+    "localhost",
+    "ai-agents"
+  ],
+  "author": "starksama",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/starksama/ntfy-bridge.git"
+  },
+  "dependencies": {
+    "eventsource": "^2.0.2"
+  },
+  "devDependencies": {
+    "@types/eventsource": "^1.1.15",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}
