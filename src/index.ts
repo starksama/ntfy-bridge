@@ -1,29 +1,7 @@
 #!/usr/bin/env node
 
 import EventSource from "eventsource";
-
-interface NtfyMessage {
-  id: string;
-  time: number;
-  event?: string;
-  topic: string;
-  title?: string;
-  message?: string;
-  tags?: string[];
-  priority?: number;
-}
-
-interface BridgePayload {
-  source: "ntfy";
-  topic: string;
-  id: string;
-  time: number;
-  title?: string;
-  message?: string;
-  tags: string[];
-  priority: number;
-  raw: NtfyMessage;
-}
+import { normalizeTopicUrl, createPayload, NtfyMessage } from "./lib.js";
 
 function parseArgs(): { topics: string[]; forward: string } {
   const args = process.argv.slice(2);
@@ -68,31 +46,11 @@ Examples:
   return { topics, forward };
 }
 
-function normalizeTopicUrl(topic: string): string {
-  if (topic.startsWith("http")) {
-    return `${topic.replace(/\/$/, "")}/sse`;
-  } else if (topic.includes("/")) {
-    return `https://${topic.replace(/\/$/, "")}/sse`;
-  } else {
-    return `https://ntfy.sh/${topic}/sse`;
-  }
-}
-
 async function forwardMessage(
   msg: NtfyMessage,
   forwardUrl: string
 ): Promise<void> {
-  const payload: BridgePayload = {
-    source: "ntfy",
-    topic: msg.topic,
-    id: msg.id,
-    time: msg.time,
-    title: msg.title,
-    message: msg.message,
-    tags: msg.tags || [],
-    priority: msg.priority || 3,
-    raw: msg,
-  };
+  const payload = createPayload(msg);
 
   try {
     const response = await fetch(forwardUrl, {
